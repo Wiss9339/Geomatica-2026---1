@@ -1,0 +1,76 @@
+---
+title: "Práctica – Conexión y Navegación"
+author: "Wilder Harvey Clavijo Beltrán"
+format:
+  html:
+    toc: true
+    number-sections: true
+
+  pdf:
+    toc: true
+    number-sections: true
+    
+    geometry: margin=2cm
+---
+
+# Introducción
+
+Este documento presenta la integración de servicios geográficos remotos y datos locales,
+validando la interoperabilidad de información geográfica en Colombia.
+
+
+# Tabla de Fuentes
+
+| Tipo | URL / Fuente | Nombre Local | Sistema de Coordenadas |
+|------|--------------|--------------|------------------------|
+| WMS | https://experience.arcgis.com/experience/568ddab184334f6b81a04d2fe9aac262/page/Geoservicios-Institucionales | IDEAM_Agrometeorologia | EPSG:4326
+| WFS | https://experience.arcgis.com/experience/568ddab184334f6b81a04d2fe9aac262/page/Geoservicios-Institucionales | Variacion de lluvias del 80 al 120 % en el periodo 2011 - 2040 | EPSG: 4326
+| WCS | https://experience.arcgis.com/experience/568ddab184334f6b81a04d2fe9aac262/page/Geoservicios-Institucionales | Cambio en la precipitacion 2011 - 2040 vs 1976 - 2005 | EPSG:4326 |
+| Shapefile | https://www.colombiaenmapas.gov.co | departamentos.shp | MAGNA-SIRGAS |
+| GeoTIFF | https://www.colombiaenmapas.gov.co | elevacion.tif | EPSG:4326 |
+
+
+# Productos Cartográficos
+
+## Mapa elaborado en QGIS
+
+En esta composicion se utilizó la capa WMS junto a la WCS, registrando las zonas con proyeccion de crecimiento o disminucion de las precipitaciones en el periodo 2011 - 2040, ambos extraidos del GeoPortal del IDEAM.
+
+**Resultado:**
+
+![Composicion QGIS](<c:/Users/HP Pavilion/Pictures/Practica 1-QGIS.png>)
+
+
+## Mapa elaborado en ArcGIS Pro
+
+Descripción del procedimiento:
+
+Esta composicion fue problematica con la version del ArcGis, sin seguridad de si es por la instalacion de dudosa procedencia, por ende solo se empleó la capa de WMS con un fondo producto de la cobertura WCS.
+
+**Resultado:**
+
+![Mapa ArcGIS](<c:/Users/HP Pavilion/Pictures/Practica 1-ArcGis.png>)
+
+
+# Cuestionario de Análisis
+
+## ¿Qué archivos / servicios permiten la edición de geometrías directamente?
+
+La edición directa de geometrías es posible en archivos vectoriales locales como Shapefile y GeoPackage, ya que estos almacenan entidades espaciales editables. También es posible en servicios WFS transaccionales (WFS-T), siempre que el servidor tenga habilitada la edición. En contraste, los servicios WMS y WCS no permiten editar geometrías, debido a que solo proporcionan imágenes renderizadas o coberturas raster.
+
+## ¿Cuáles permiten acceso a la tabla de atributos? Describa tres campos de uno de ellos.
+
+El acceso a la tabla de atributos está disponible en formatos vectoriales como Shapefile, GeoPackage, y servicios WFS, porque contienen entidades espaciales con información asociada. Por ejemplo, en una capa de municipios pueden encontrarse campos como NOMBRE, que identifica el municipio, COD_DANE, que representa su código oficial único, y AREA, que indica la superficie. Los servicios WMS no disponen de tabla de atributos, ya que únicamente entregan representaciones gráficas.
+
+## ¿En qué caso fue posible cambiar la simbología desde el software cliente?
+
+La simbología pudo modificarse desde el software cliente en capas locales y servicios WFS, debido a que el cliente controla la representación visual de las entidades. En los servicios WMS, la simbología es definida por el servidor y el cliente solo puede ajustar parámetros de visualización básicos como transparencia u orden de capas.
+
+## ¿Por qué es preferible usar un WFS sobre un Shapefile descargado en proyectos a largo plazo?
+
+El uso de WFS es preferible frente a un Shapefile descargado en proyectos de largo plazo porque permite trabajar con datos actualizados directamente desde el servidor, evitando duplicación de archivos y problemas de versiones. Además, facilita la interoperabilidad, la consistencia entre usuarios y la ejecución de consultas dinámicas sobre la información.
+
+# Fuentes de Información
+
+- Geoservicios Institucionales (https://experience.arcgis.com/experience/568ddab184334f6b81a04d2fe9aac262/page/Geoservicios-Institucionales)
+- Colombia en mapas (https://www.colombiaenmapas.gov.co)
