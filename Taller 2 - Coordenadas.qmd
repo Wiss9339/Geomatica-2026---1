@@ -1,0 +1,180 @@
+---
+title: "Taller Sistemas de Coordenadas en ArcGIS Pro"
+author: "Wilder Clavijo"
+format:
+  html:
+    toc: true
+    number-sections: true
+
+  pdf:
+    toc: true
+    number-sections: true
+    
+    geometry: margin=2cm
+---
+
+# Introducción
+
+El presente taller tiene como objetivo comprender el manejo de sistemas de coordenadas dentro de ArcGIS Pro, incluyendo la definición de sistemas de referencia espacial, reproyección de datos y transformación entre diferentes datums geodésicos. Estas operaciones son fundamentales dentro de los Sistemas de Información Geográfica, ya que permiten garantizar la correcta integración espacial de datos provenientes de distintas fuentes.
+
+En el desarrollo del taller se analizan principalmente dos sistemas de referencia utilizados en Colombia: el **Datum Bogotá**, que corresponde a un sistema geodésico local basado en el elipsoide Internacional de 1924, y el sistema **MAGNA-SIRGAS**, que corresponde al sistema geocéntrico oficial actualmente adoptado en el país.
+
+# Archivos que conforman un Shapefile
+
+En la carpeta de datos suministrada se encuentra el archivo **cundinamarca.shp**, el cual no posee un archivo `.prj`. La ausencia de este archivo indica que el dataset no tiene definido un sistema de coordenadas.
+
+Un **shapefile** no corresponde a un único archivo, sino a un conjunto de archivos que almacenan diferentes componentes del dataset espacial.
+
+| Archivo | Función |
+|---|---|
+| .shp | Almacena la geometría de las entidades espaciales |
+| .shx | Índice que permite acceder rápidamente a la geometría |
+| .dbf | Tabla de atributos asociada a las entidades |
+| .sbn | Índice espacial |
+| .sbx | Archivo auxiliar del índice espacial |
+| .shp.xml | Archivo de metadatos |
+
+Los tres archivos fundamentales que permiten que el shapefile funcione son:
+
+- `.shp`
+- `.shx`
+- `.dbf`
+
+El archivo `.prj` únicamente aparece cuando el dataset tiene definido un sistema de referencia espacial.
+
+![Shp sin coordenadas definidas](Imagenesqmd/Evidencia11.JPG)
+
+![Componentes del shp con el archivo .prj inexistente](Imagenesqmd/Evidencia12.JPG)
+
+![Conversion de coordenadas a GCS Bogotá](Imagenesqmd/Evidencia13.JPG)
+
+# Definición del sistema de coordenadas GCS_Bogota
+
+Para definir el sistema de coordenadas del shapefile **cundinamarca.shp** se utiliza la herramienta **Define Projection**, disponible dentro de la caja de herramientas **Projections and Transformations** en ArcGIS Pro.
+
+El sistema asignado corresponde a **GCS_Bogota**, el cual es un **sistema de coordenadas geográficas**.
+
+Los sistemas de coordenadas geográficas describen la posición de los puntos sobre la superficie terrestre mediante dos coordenadas angulares:
+
+- latitud
+- longitud
+
+Estas coordenadas se expresan en grados.
+
+El sistema **GCS_Bogota** se encuentra asociado al **Datum Bogotá**, el cual fue el sistema de referencia geodésico oficial de Colombia antes de la adopción de MAGNA-SIRGAS.
+
+Sus principales características son:
+
+| Propiedad | Descripción |
+|---|---|
+| Tipo | Sistema de coordenadas geográficas |
+| Datum | Bogotá |
+| Elipsoide | Internacional 1924 (Hayford) |
+| Unidades | Grados |
+
+Este datum es considerado un **datum local**, ya que su origen no coincide con el centro de masas terrestre. En cambio, fue ajustado específicamente para representar con mayor precisión el territorio colombiano.
+
+# Sistema de coordenadas Colombia Bogota Zone
+
+El sistema **Colombia Bogota Zone** corresponde a un **sistema de coordenadas proyectadas**, lo que significa que las coordenadas geográficas se transforman a coordenadas planas.
+
+En este tipo de sistemas, la posición de los puntos se expresa mediante coordenadas cartesianas **X,Y** en unidades métricas.
+
+Este sistema utiliza la **proyección Transversa de Mercator**, que forma parte del sistema Gauss-Krüger utilizado históricamente en la cartografía oficial colombiana.
+
+Las características principales de este sistema son:
+
+| Propiedad | Descripción |
+|---|---|
+| Tipo | Sistema proyectado |
+| Proyección | Transversa de Mercator |
+| Datum | Bogotá |
+| Elipsoide | Internacional 1924 |
+| Unidades | Metros |
+
+Este sistema corresponde específicamente a la zona cuyo meridiano central se encuentra cercano a Bogotá.
+
+En ArcGIS Pro existen múltiples sistemas de coordenadas asociados al territorio colombiano. Estos sistemas pueden ser geográficos o proyectados.
+
+Cada sistema se identifica mediante un **código EPSG**, el cual corresponde a un identificador estandarizado internacionalmente.
+
+| Sistema | Tipo | Datum | Proyección | EPSG |
+|---|---|---|---|---|
+| GCS_Bogota | Geográfico | Bogotá | Ninguna | 4218 |
+| GCS_MAGNA_SIRGAS | Geográfico | MAGNA-SIRGAS | Ninguna | 4686 |
+| Bogota / Colombia Bogota Zone | Proyectado | Bogotá | Transverse Mercator | 21897 |
+| MAGNA-SIRGAS / Colombia Bogota Zone | Proyectado | MAGNA-SIRGAS | Transverse Mercator | 3116 |
+| MAGNA-SIRGAS / Colombia East Central | Proyectado | MAGNA-SIRGAS | Transverse Mercator | 3117 |
+
+
+# Reproyección utilizando la herramienta Project
+
+Para reproyectar datos espaciales se utiliza la herramienta **Project**, la cual permite transformar las coordenadas de un dataset desde un sistema de referencia hacia otro.
+
+En este caso se reproyecta el shapefile **municipios.shp** desde **GCS_Bogota** hacia **Colombia Bogota Zone**.
+
+Este proceso implica convertir coordenadas:
+
+- de **latitud y longitud** a **coordenadas planas en metros**
+
+Como ambos sistemas utilizan el **Datum Bogotá**, no es necesario especificar una transformación geográfica.
+
+El proceso que realiza ArcGIS consiste en:
+
+1. Leer las coordenadas geográficas del dataset original.
+2. Identificar el sistema de referencia espacial.
+3. Aplicar la ecuación matemática de la proyección cartográfica.
+4. Calcular nuevas coordenadas en el sistema proyectado.
+
+Al revisar las propiedades del dataset reproyectado, ArcGIS muestra información correspondiente tanto al sistema geográfico base como al sistema proyectado.
+
+Esto ocurre porque un sistema proyectado está compuesto por dos elementos fundamentales:
+
+1. **Sistema geográfico base**
+2. **Sistema de proyección**
+
+El sistema geográfico define el datum y el elipsoide, mientras que la proyección define cómo se transforman las coordenadas geográficas a un plano.
+
+# Transformación de Datum Bogotá a MAGNA-SIRGAS
+
+Cuando se reproyectan datos desde el **Datum Bogotá** hacia **MAGNA-SIRGAS**, sí se produce un cambio de datum.
+
+En este caso es necesario utilizar una **transformación geográfica**, ya que ambos sistemas tienen diferentes definiciones del origen de coordenadas.
+
+El método recomendado por el IGAC es la transformación **Molodensky-Badekas**, la cual utiliza diez parámetros para realizar el ajuste entre ambos sistemas.
+
+Estos parámetros incluyen:
+
+- tres traslaciones
+- tres rotaciones
+- un factor de escala
+- tres coordenadas del centro de rotación
+
+Este modelo permite obtener resultados más precisos en transformaciones regionales.
+
+El Datum Bogotá presenta un desplazamiento aproximado de **250 metros** respecto a MAGNA-SIRGAS.
+Este desplazamiento se debe a que el Datum Bogotá fue definido como un sistema local, mientras que MAGNA-SIRGAS es un sistema geocéntrico.
+
+![Notese la diferencia entre los 2 sistemas como un solapamiento entre capas no uniforme](Imagenesqmd/Evidencia60.JPG)
+
+La **proyección al vuelo** es una funcionalidad de ArcGIS Pro que permite visualizar capas con diferentes sistemas de coordenadas dentro de un mismo mapa.
+
+Cuando esto ocurre, el software transforma temporalmente las coordenadas de cada capa para representarlas correctamente en el sistema de coordenadas del mapa.
+
+Es importante destacar que esta operación no modifica los datos originales.
+
+Otra forma de convertir sistemas de coordenadas consiste en importar datasets a un **Feature Dataset** dentro de una geodatabase que tenga definido un sistema de referencia espacial distinto.
+
+Durante este proceso, ArcGIS detecta el sistema original de los datos y realiza automáticamente la transformación necesaria.
+
+Este procedimiento permite mantener la consistencia espacial de los datos dentro de una geodatabase.
+
+![En este caso se evidencian las mismas 2 capas pero reproyectadas, puliendo las discrepancias anteriormente mostradas](Imagenesqmd/Evidencia50.JPG)
+
+# Referencias
+
+IGAC. Sistema de referencia MAGNA-SIRGAS.
+
+ESRI. ArcGIS Pro Documentation: Coordinate Systems.
+
+Snyder, J. Map Projections: A Working Manual.
