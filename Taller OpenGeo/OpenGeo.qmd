@@ -1,0 +1,22 @@
+---
+title: "Taller en clase - Open Geo Agent "
+author: "Wilder Clavijo"
+format:
+  html:
+    toc: true
+    number-sections: true
+
+  pdf:
+    toc: true
+    number-sections: true
+    
+    geometry: margin=2cm
+---
+
+![Imagen 1: Peticion 1, ubicacion de bogotá](IMG1.JPG)
+
+En este caso se esta haciendo el ensayo de la herramienta, puesto que en primera instancia decidí comprobar el funcionamiento del proveedor Ollama, el cual (fuera de las limitaciones inherentes a un modelo instalado y dependiente del equipo) no reflejó ninguna acción en el mapa a pesar de señalar como exitosas las operaciones solicitadas.
+
+![Imagen 2: Peticion 2, Ubicacion del municipio de Ipiales, delimitacion del municipio y distribucion de puntos para elaborar un MDE desde 0](IMG2.JPG)
+
+La segunda orden fue de procesos consecutivos, se me hizo interesante la lógica que sigue a la hora de delimitar municipios dado que, al no poseer una guía, se limita a generar zonas buffer a partir de la cabecera municipal, de igual manera, al solicitarle la base de un MDE con los puntos, el mismo prompt aproxima unos puntos de elevación en toda el área, sin embargo, también menciona que el perímetro y las elevaciones son aproximadas, y deben ser validadas con fuentes externas como el IGAC o el DANE, por lo que da la posibilidad de, al subir mas informacion a un solo proyecto, este sea capaz de concatenar y reflejar un resultado más fidedigno.
